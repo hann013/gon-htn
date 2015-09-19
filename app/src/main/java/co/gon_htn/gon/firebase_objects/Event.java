@@ -1,4 +1,4 @@
-package firebase_objects;
+package co.gon_htn.gon.firebase_objects;
 
 import java.sql.Timestamp;
 
@@ -8,8 +8,7 @@ import java.sql.Timestamp;
 public class Event
 {
     private String[] items;
-    private String startDate;
-    private String endDate;
+    private Timestamp date;
     private String location;
 
 

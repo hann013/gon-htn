@@ -37,7 +37,9 @@ public class AddEventActivity extends AppCompatActivity
     EditText userItem;
     LinearLayout userItemList;
     Activity activity;
+
     Button addUserItem;
+    Button submitEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,28 +50,6 @@ public class AddEventActivity extends AppCompatActivity
         setContentView(R.layout.activity_add_event);
 
         activity = this;
-
-        //get root layout
-        RelativeLayout root = (RelativeLayout) findViewById(R.id.root_layout);
-        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
-        SoftKeyboard softKeyboard;
-        softKeyboard = new SoftKeyboard(mainLayout, im);
-        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
-        {
-
-            @Override
-            public void onSoftKeyboardHide()
-            {
-                // Code here
-            }
-
-            @Override
-            public void onSoftKeyboardShow()
-            {
-                // Code here
-            }
-        });
-
 
         //get linear layout that contains all user inputted items
         userItemList = (LinearLayout)findViewById(R.id.user_items);
@@ -101,6 +81,16 @@ public class AddEventActivity extends AppCompatActivity
         userItem = (EditText) findViewById(R.id.user_item_1);
         View.OnKeyListener myEkl = enterKeyListener();
         userItem.setOnKeyListener(myEkl);
+
+        //Submit button on click event handler
+        submitEvent = (Button) findViewById(R.id.submit_event);
+        submitEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
     }
 
 

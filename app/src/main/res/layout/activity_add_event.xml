@@ -107,7 +107,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/action_submit"
-                android:id="@+id/button"
+                android:id="@+id/submit_event"
                 android:layout_marginTop="50dp"
                 android:textColor="@color/White"
                 android:background="@color/DarkGrey"

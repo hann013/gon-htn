@@ -13,48 +13,56 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
-import java.util.Arrays;
+import com.firebase.client.Firebase;
 
 public class LoginActivity extends FragmentActivity {
 
-    CallbackManager callbackManager;
     Activity activity;
-
     Button showEvents;
+
+    public static final String USER_ID_BUNDLE_KEY = "Login.userId";
+
+    private final Activity mActivity = this;
+    private CallbackManager mCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // initialize Firebase
+        Firebase.setAndroidContext(this);
+
         // initialize Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-        callbackManager = CallbackManager.Factory.create();
         activity = this;
 
-        AccessToken at = AccessToken.getCurrentAccessToken();
-
         //user is logged in
-        if(at != null && showEvents != null)
-        {
+        if (AccessToken.getCurrentAccessToken() != null) {
             showEvents.setVisibility(View.VISIBLE);
         }
 
-        // find log in button and register call back
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        // find login button and register callback
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        mCallbackManager = CallbackManager.Factory.create();
+
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // request additional permissions if necessary
+
+                //button to show event list is now visible
                 if(showEvents != null)
                     showEvents.setVisibility(View.VISIBLE);
 
-                Toast.makeText(getApplicationContext(), "Login success", Toast.LENGTH_SHORT).show();
+                // TODO: request additional permissions if necessary
+
+                //start event list activity
+                Intent intent = new Intent(mActivity, MenuActivity.class);
+                intent.putExtra(USER_ID_BUNDLE_KEY, loginResult.getAccessToken().getUserId());
+                startActivity(intent);
             }
 
             @Override
@@ -88,7 +96,7 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
 
