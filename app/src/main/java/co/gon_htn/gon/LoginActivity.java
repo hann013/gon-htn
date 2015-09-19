@@ -38,8 +38,8 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // request additional permissions if necessary
-                LoginManager.getInstance().logInWithReadPermissions(activity,
-                        Arrays.asList("user_friends"));
+                Intent myIntent = new Intent(activity, MenuActivity.class);
+                startActivity(myIntent);
                 Toast.makeText(getApplicationContext(), "Login success", Toast.LENGTH_SHORT).show();
             }
 
