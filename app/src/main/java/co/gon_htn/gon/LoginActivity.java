@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -31,6 +32,10 @@ public class LoginActivity extends FragmentActivity {
         // initialize Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
+        if (AccessToken.getCurrentAccessToken() != null) {
+            // TODO: instantiate button
+        }
 
         // find login button and register callback
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
