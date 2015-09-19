@@ -32,6 +32,11 @@
             android:name=".MenuActivity"
             android:label="@string/title_activity_menu" >
         </activity>
+        <activity
+            android:name=".AddEventActivity"
+            android:label="@string/title_activity_add_event"
+            android:theme="@style/AppTheme" >
+        </activity>
     </application>
 
 </manifest>
