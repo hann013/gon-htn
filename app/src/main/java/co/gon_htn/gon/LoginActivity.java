@@ -4,50 +4,44 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-
-import java.util.Arrays;
+import com.firebase.client.Firebase;
 
 public class LoginActivity extends FragmentActivity {
 
-    private static final String USER_ID_BUNDLE_KEY = "Login.userId";
+    public static final String USER_ID_BUNDLE_KEY = "Login.userId";
 
-    CallbackManager callbackManager;
+    private final Activity mActivity = this;
+    private CallbackManager mCallbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // initialize Firebase
+        Firebase.setAndroidContext(this);
+
         // initialize Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-        callbackManager = CallbackManager.Factory.create();
-
-        final Activity activity = this;
-
-        // find log in button and register call back
+        // find login button and register callback
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        mCallbackManager = CallbackManager.Factory.create();
 
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // request additional permissions to view user events
-                LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("user_events"));
-
-                Intent intent = new Intent(activity, MenuActivity.class);
+                Intent intent = new Intent(mActivity, MenuActivity.class);
                 intent.putExtra(USER_ID_BUNDLE_KEY, loginResult.getAccessToken().getUserId());
                 startActivity(intent);
-                Toast.makeText(getApplicationContext(), "User id = " + loginResult.getAccessToken().getUserId(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -68,6 +62,6 @@ public class LoginActivity extends FragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 }
