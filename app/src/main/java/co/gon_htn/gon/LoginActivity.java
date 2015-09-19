@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -17,6 +18,8 @@ import com.facebook.login.widget.LoginButton;
 import java.util.Arrays;
 
 public class LoginActivity extends FragmentActivity {
+
+    private static final String USER_ID_BUNDLE_KEY = "Login.userId";
 
     CallbackManager callbackManager;
 
@@ -33,14 +36,18 @@ public class LoginActivity extends FragmentActivity {
         final Activity activity = this;
 
         // find log in button and register call back
-        LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+        final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // request additional permissions if necessary
-                LoginManager.getInstance().logInWithReadPermissions(activity,
-                        Arrays.asList("user_friends"));
-                Toast.makeText(getApplicationContext(), "Login success", Toast.LENGTH_SHORT).show();
+                // request additional permissions to view user events
+                LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("user_events"));
+
+                Intent intent = new Intent(activity, MenuActivity.class);
+                intent.putExtra(USER_ID_BUNDLE_KEY, loginResult.getAccessToken().getUserId());
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), "User id = " + loginResult.getAccessToken().getUserId(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
