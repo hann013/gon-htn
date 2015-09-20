@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	 
+       <link href = "app.css" rel="stylesheet" type="text/css"/>  
+
+        <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Tangerine">
+	<title>Adeline Wang</title>
+	
+<body>
+ 	
+ 	<h1> gon </h1>
+ 	<h2> An application that will never allow you to miss packing items for events. </h2> 
+ 	<h3> GOn is an android app created in Hack The North through Android Studio that reads information from user's Facebook account to track their event calender. Users can also add in events on their own. The information automatically reads into user's phone, and GOn app will provide a list of items to bring. </h3>
+
+ 	<div id="rec"="width:16cm; height:5cm; border:1px solid #000;"></div>
+
+ 	<p> Created by:    </p>
+
+ 	<img src="home.jpg" style="width:13cm;height:19cm;" />
+ 	 
+
+</body>
+
+
+
+
+
+
+</html>

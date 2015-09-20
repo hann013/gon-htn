@@ -1,7 +1,6 @@
 package co.gon_htn.gon;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ public class LoginActivity extends FragmentActivity {
     Button showEvents;
 
     public static final String USER_ID_BUNDLE_KEY = "Login.userId";
+    public static boolean importFacebookEvents = false;
 
     private final Activity mActivity = this;
     private CallbackManager mCallbackManager;

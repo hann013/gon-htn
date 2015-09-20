@@ -37,6 +37,7 @@ import co.gon_htn.gon.firebase_objects.User;
 public class MenuActivity extends AppCompatActivity {
     private Firebase mFirebaseRef = new Firebase("https://gon-htn.firebaseio.com/users/");
     private String mUserId;
+    private boolean facebookEventsUpdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,36 +58,8 @@ public class MenuActivity extends AppCompatActivity {
         mFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(final DataSnapshot dataSnapshot) {
-                final HashMap<String, String> ids = (HashMap<String, String>) dataSnapshot.getValue();
-
-                // retrieve name and events data
-                GraphRequest dataRequest = new GraphRequest(
-                        AccessToken.getCurrentAccessToken(),
-                        "/" + mUserId,
-                        null,
-                        HttpMethod.GET,
-                        new GraphRequest.Callback() {
-                            public void onCompleted(GraphResponse response) {
-                                try {
-                                    String name = response.getJSONObject().getString("name");
-
-                                    // if user doesn't exist, save new user
-                                    if (ids == null || !ids.containsKey(mUserId)) {
-                                        createAndSaveNewUser(name);
-                                    }
-                                    storeEvents(response.getJSONObject());
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                } catch (ParseException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                );
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id,name,events");
-                dataRequest.setParameters(parameters);
-                dataRequest.executeAsync();
+                HashMap<String, String> ids = (HashMap<String, String>) dataSnapshot.getValue();
+                facebookDataRequest(ids);
             }
 
             @Override
@@ -106,7 +79,41 @@ public class MenuActivity extends AppCompatActivity {
         newUserRef.setValue(newUser);
     }
 
-    public void storeEvents(JSONObject graphData) throws JSONException, ParseException {
+    public void facebookDataRequest(final HashMap<String, String> ids) {
+        // retrieve name and events data
+        GraphRequest facebookDataRequest = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/" + mUserId,
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        try {
+                            String name = response.getJSONObject().getString("name");
+
+                            // if user doesn't exist, save new user
+                            if (ids == null || !ids.containsKey(mUserId)) {
+                                createAndSaveNewUser(name);
+                            }
+
+                            if (LoginActivity.importFacebookEvents && !facebookEventsUpdated) {
+                                storeFacebookEvents(response.getJSONObject());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+        );
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,events");
+        facebookDataRequest.setParameters(parameters);
+        facebookDataRequest.executeAsync();
+    }
+
+    public void storeFacebookEvents(JSONObject graphData) throws JSONException, ParseException {
         // look for events that are upcoming
         JSONArray eventsData = null;
         eventsData = graphData.getJSONObject("events").getJSONArray("data");
@@ -129,11 +136,11 @@ public class MenuActivity extends AppCompatActivity {
 
                     place += location.getString("city") + ", " + location.getString("state");
 
-
                     Event eventToSave = new Event(event.getString("name"),
-                            AddEventActivity.EVENT_SOURCE_FACEBOOK, place, startDate.toString(), null);
+                            AddEventActivity.EVENT_SOURCE_FACEBOOK, place, formatter.format(startDate), null);
 
                     mFirebaseRef.child(mUserId).child("events").child(event.getString("id")).setValue(eventToSave);
+                    facebookEventsUpdated = true;
                 }
             }
         }
