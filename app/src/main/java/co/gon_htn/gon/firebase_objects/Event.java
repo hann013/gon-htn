@@ -42,7 +42,11 @@ public class Event
 
     }
 
+<<<<<<< HEAD
     public Event(String name, String source, String category, String location, String startDate, String endDate,
+=======
+    public Event(String name, String source, String location, String startDate, String endDate,
+>>>>>>> 64d7bed0a97fcd7b3e0f3567762ecc7d40585a36
                  ArrayList<String> userItems, ArrayList<String> recommendedItems) {
         mName = name;
         mSource = source;
@@ -80,7 +84,11 @@ public class Event
                 '}';
     }
 
+<<<<<<< HEAD
     public Event(String name, String source, String category, String location, String startDate, String endDate) {
+=======
+    public Event(String name, String source, String location, String startDate, String endDate) {
+>>>>>>> 64d7bed0a97fcd7b3e0f3567762ecc7d40585a36
         mName = name;
         mSource = source;
         mCategory = category;

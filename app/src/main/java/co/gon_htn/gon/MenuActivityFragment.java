@@ -1,7 +1,9 @@
 package co.gon_htn.gon;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.JsonWriter;
@@ -11,18 +13,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+<<<<<<< HEAD
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
+=======
+import android.widget.Space;
+import android.widget.TextView;
+
+import com.facebook.AccessToken;
+import com.fasterxml.jackson.annotation.JsonValue;
+>>>>>>> 64d7bed0a97fcd7b3e0f3567762ecc7d40585a36
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+<<<<<<< HEAD
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+=======
+>>>>>>> 64d7bed0a97fcd7b3e0f3567762ecc7d40585a36
 import co.gon_htn.gon.firebase_objects.Event;
 
 /**
@@ -55,11 +68,46 @@ public class MenuActivityFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 Log.d("Found: ", snapshot.getChildrenCount() + " events");
+<<<<<<< HEAD
                 for (DataSnapshot postSnapshot : snapshot.getChildren())
                 {
                     Event event = postSnapshot.getValue(Event.class);
                     LinearLayout newBadge = createEventBadge(event);
                     mEventsLayout.addView(newBadge);
+=======
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    Event event = postSnapshot.getValue(Event.class);
+                    LinearLayout newBadge = new LinearLayout(context);
+                    newBadge.setOrientation(LinearLayout.VERTICAL);
+                    newBadge.setPadding(20, 20, 20, 20);
+
+                    TextView eventName = new TextView(context);
+                    TextView eventStartDate = new TextView(context);
+
+                    newBadge.addView(eventName);
+                    newBadge.addView(eventStartDate);
+
+                    eventName.setText(event.getName());
+                    eventStartDate.setText(event.getStartDate());
+
+                    eventName.setTextColor(getResources().getColor(R.color.DarkGrey));
+                    eventName.setTextSize(20);
+                    eventStartDate.setPaintFlags(Paint.FAKE_BOLD_TEXT_FLAG);
+                    eventStartDate.setTextSize(15);
+
+                    if (event.getSource().equals(AddEventActivity.EVENT_SOURCE_USER)) {
+                        newBadge.setBackgroundColor(context.getResources().getColor(R.color.LightOrange));
+                    } else {
+                        newBadge.setBackgroundColor(context.getResources().getColor(R.color.LightBlue));
+                    }
+
+                    Space miniSpace = new Space(context);
+                    miniSpace.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            50));
+
+                    mEventsLayout.addView(newBadge);
+                    mEventsLayout.addView(miniSpace);
+>>>>>>> 64d7bed0a97fcd7b3e0f3567762ecc7d40585a36
                 }
             }
 

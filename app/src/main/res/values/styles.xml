@@ -9,6 +9,10 @@
     <color name="DarkGrey">#34495e</color>
     <color name="Green">#27ae60</color>
     <color name="Cloud">#ecf0f1</color>
+
+    <color name="LightGreen">#2ecc71</color>
+    <color name="LightOrange">#FCB544</color>
+    <color name="LightBlue">#6BB9F0</color>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

@@ -51,6 +51,12 @@ public class LoginActivity extends FragmentActivity {
                     menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                     startActivity(menuIntent);
                 }
+                else
+                {
+                    //if user is not logged in, make button invisible
+                    showEvents.setVisibility(View.INVISIBLE);
+                    Toast.makeText(mActivity, "Log into Facebook", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
