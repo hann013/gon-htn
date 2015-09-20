@@ -11,22 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView android:text="@string/app_name"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:textColor="@color/Carrot"
-            android:textSize="100dp" />
-
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:layout_gravity="center" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:id="@+id/imageView"
+            android:src="@drawable/gon" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -36,14 +25,25 @@
 
             <Button
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="34dp"
                 android:text="@string/action_my_events"
                 android:id="@+id/btn_my_events"
                 android:layout_gravity="center_horizontal"
-                android:textStyle="bold"
                 android:textColor="@color/White"
-                android:background="@color/DarkGrey"
-                android:visibility="invisible" />
+                android:background="@color/Carrot"
+                android:visibility="visible"
+                android:textSize="20dp"
+                android:textStyle="bold|normal" />
+
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="10dp"
+                android:padding="100dp" />
+
         </LinearLayout>
 
     </LinearLayout>
