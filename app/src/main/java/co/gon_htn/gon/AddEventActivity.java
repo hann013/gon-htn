@@ -87,18 +87,21 @@ public class AddEventActivity extends AppCompatActivity
                             mEvent = postSnapshot.getValue(Event.class);
                             Log.d("Event", mEvent.toString());
 
-                            if(mEvent.getUserItems().size() != 0)
+                            if(mEvent.getUserItems() != null)
                             {
-                                userItem = (EditText) findViewById(R.id.user_item_1);
-                                userItem.setVisibility(View.GONE);
-
-                                for(int i = 0; i < mEvent.getUserItems().size(); i++)
+                                if(mEvent.getUserItems().size() != 0)
                                 {
-                                    EditText newItem = new EditText(activity);
-                                    newItem.setText(mEvent.getUserItems().get(i));
-                                    View.OnKeyListener ekl = enterKeyListener();
-                                    newItem.setOnKeyListener(ekl);
-                                    userItemList.addView(newItem);
+                                    userItem = (EditText) findViewById(R.id.user_item_1);
+                                    userItem.setVisibility(View.GONE);
+
+                                    for(int i = 0; i < mEvent.getUserItems().size(); i++)
+                                    {
+                                        EditText newItem = new EditText(activity);
+                                        newItem.setText(mEvent.getUserItems().get(i));
+                                        View.OnKeyListener ekl = enterKeyListener();
+                                        newItem.setOnKeyListener(ekl);
+                                        userItemList.addView(newItem);
+                                    }
                                 }
                             }
 
@@ -258,6 +261,10 @@ public class AddEventActivity extends AppCompatActivity
                 String startDate = ((TextView)findViewById(R.id.start_date)).getText().toString();
                 String endDate = ((TextView)findViewById(R.id.end_date)).getText().toString();
 
+                // UserID - id to be used for saving the data
+                String id = null;
+
+
                 //User-inputted items
                 ViewGroup items_u = ((ViewGroup)(LinearLayout)
                         findViewById(R.id.user_items));
@@ -285,10 +292,12 @@ public class AddEventActivity extends AppCompatActivity
                             rItems_array.add(((EditText) myView).getText().toString());
                     }
 
+                    //when editing existing file
                     if(mEvent != null)
                     {
                         newEvent = new Event(eventName, mEvent.getSource(), category, location, startDate, endDate,
                                 uItems_array, rItems_array);
+                        id = mEventId;
                     }
                     else
                     {
@@ -298,10 +307,12 @@ public class AddEventActivity extends AppCompatActivity
                 }
                 else
                 {
+                    //when editing existing file
                     if(mEvent != null)
                     {
                         newEvent = new Event(eventName, mEvent.getSource(), category, location, startDate, endDate,
                                 uItems_array);
+                        id = mEventId;
                     }
                     else
                     {
@@ -312,7 +323,11 @@ public class AddEventActivity extends AppCompatActivity
 
                 //Get user facebook id and save event to the database
                 String thisUser = AccessToken.getCurrentAccessToken().getUserId();
-                Firebase eventRef = mFbUsersRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
+                Firebase eventRef;
+                if(id == null)
+                    eventRef = mFbUsersRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
+                else
+                    eventRef = mFbUsersRef.child(thisUser).child("events").child(id);
                 eventRef.setValue(newEvent);
 
                 Toast.makeText(activity, "Event saved!", Toast.LENGTH_SHORT).show();
