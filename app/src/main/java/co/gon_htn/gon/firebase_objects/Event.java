@@ -3,24 +3,20 @@ package co.gon_htn.gon.firebase_objects;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-/**
- * Created by dayeonglee on 15-09-19.
- */
 public class Event
 {
     // recommendedItems and endDate are not mandatory but other ones are mandatory
 
-    private String[] mRecommendedItems;
-    private String[] mUserItems;
+    private ArrayList<String> mUserItems;
+    private ArrayList<String> mRecommendedItems;
     private String mStartDate;
     private String mEndDate;
     private String mLocation;
     private String mName;
     private String mSource;
 
-    public Event(String name, String source, String location, String startDate, String endDate, String[] userItems,
-                 String[] recommendedItems)
-    {
+    public Event(String name, String source, String location, String startDate, String endDate,
+                 ArrayList<String> userItems, ArrayList<String> recommendedItems) {
         mName = name;
         mSource = source;
         mLocation = location;
@@ -31,8 +27,8 @@ public class Event
         mUserItems = userItems;
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate, String[] userItems)
-    {
+    public Event(String name, String source, String location, String startDate, String endDate,
+                 ArrayList<String> userItems) {
         mName = name;
         mSource = source;
         mLocation = location;
@@ -40,6 +36,17 @@ public class Event
         mEndDate = endDate;
         mLocation = location;
         mUserItems = userItems;
+    }
+
+    public Event(String name, String source, String location, String startDate, String endDate) {
+        mName = name;
+        mSource = source;
+        mLocation = location;
+        mStartDate = startDate;
+        mEndDate = endDate;
+        mLocation = location;
+        mRecommendedItems = new ArrayList<>();
+        mUserItems = new ArrayList<>();
     }
 
     public String getName() {
@@ -65,12 +72,12 @@ public class Event
         return mEndDate;
     }
 
-    public String[] getUserItems()
+    public ArrayList<String> getUserItems()
     {
         return mUserItems;
     }
 
-    public String[] getRecommendedItems()
+    public ArrayList<String> getRecommendedItems()
     {
         return mRecommendedItems;
     }
