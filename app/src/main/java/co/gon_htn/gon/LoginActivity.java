@@ -1,6 +1,7 @@
 package co.gon_htn.gon;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.Firebase;
+
+import co.gon_htn.gon.firebase_objects.EventsPermissionsDialogFragment;
 
 public class LoginActivity extends FragmentActivity {
 
@@ -65,17 +68,13 @@ public class LoginActivity extends FragmentActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
                 //button to show event list is now visible
-                if (showEvents != null)
+                if(showEvents != null) {
                     showEvents.setVisibility(View.VISIBLE);
+                }
 
-                // TODO: request additional permissions if necessary
-
-                //start event list activity
-                Intent intent = new Intent(mActivity, MenuActivity.class);
-                intent.putExtra(USER_ID_BUNDLE_KEY, loginResult.getAccessToken().getUserId());
-                startActivity(intent);
+                EventsPermissionsDialogFragment eventsPermissions = new EventsPermissionsDialogFragment();
+                eventsPermissions.show(getFragmentManager(), "events permissions");
             }
 
             @Override

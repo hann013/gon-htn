@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
 
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
@@ -33,15 +34,14 @@ public class MenuActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
 
         // request additional permissions to view user events
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("user_events"));
 
-        //mUserId = getIntent().getExtras().getString(LoginActivity.USER_ID_BUNDLE_KEY);
-
+        mUserId = getIntent().getExtras().getString(LoginActivity.USER_ID_BUNDLE_KEY);
         listenForDatabaseChanges();
-
         setContentView(R.layout.activity_menu);
     }
 

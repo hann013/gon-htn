@@ -6,8 +6,12 @@
     <string name="title_activity_menu">MenuActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_add">+</string>
-    <string name="title_activity_add_event">AddEventActivity</string>
 
+    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="events_permissions_header">Import Facebook Events</string>
+    <string name="events_permissions_details">Do you want to import upcoming events from Facebook?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="event_add">Add Event</string>
     <string name="event_name">Name</string>
