@@ -7,4 +7,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_add_event">+</string>
     <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="events_permissions_header">Import Facebook Events</string>
+    <string name="events_permissions_details">Do you want to import upcoming events from Facebook?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
