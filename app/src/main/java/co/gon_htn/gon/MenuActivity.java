@@ -37,7 +37,6 @@ import co.gon_htn.gon.firebase_objects.User;
 public class MenuActivity extends AppCompatActivity {
     private Firebase mFirebaseRef = new Firebase("https://gon-htn.firebaseio.com/users/");
     private String mUserId;
-    private boolean facebookEventsUpdated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +95,7 @@ public class MenuActivity extends AppCompatActivity {
                                 createAndSaveNewUser(name);
                             }
 
-                            if (LoginActivity.importFacebookEvents && !facebookEventsUpdated) {
+                            if (LoginActivity.importFacebookEvents) {
                                 storeFacebookEvents(response.getJSONObject());
                             }
                         } catch (JSONException e) {
@@ -130,10 +129,6 @@ public class MenuActivity extends AppCompatActivity {
 
                     String place = event.getJSONObject("place").getString("name") + ", ";
 
-                    if (location.getString("street") != null) {
-                        place += location.getString("street") + ", ";
-                    }
-
                     place += location.getString("city") + ", " + location.getString("state");
 
                     Event eventToSave = new Event(event.getString("name"),
@@ -141,7 +136,6 @@ public class MenuActivity extends AppCompatActivity {
                             place, formatter.format(startDate), null);
 
                     mFirebaseRef.child(mUserId).child("events").child(event.getString("id")).setValue(eventToSave);
-                    facebookEventsUpdated = true;
                 }
             }
         }
