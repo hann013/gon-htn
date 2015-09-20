@@ -35,16 +35,19 @@ public class Event
     private String mLocation;
     private String mName;
     private String mSource;
+    private String mCategory;
 
     public Event()
     {
 
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate,
-                 ArrayList<String> userItems, ArrayList<String> recommendedItems) {
+    public Event(String name, String source, String category, String location, String startDate, String endDate,
+                 ArrayList<String> userItems, ArrayList<String> recommendedItems)
+    {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;
@@ -53,10 +56,11 @@ public class Event
         mUserItems = userItems;
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate,
+    public Event(String name, String source, String category, String location, String startDate, String endDate,
                  ArrayList<String> userItems) {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;
@@ -77,9 +81,11 @@ public class Event
                 '}';
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate) {
+    public Event(String name, String source, String category, String location, String startDate, String endDate)
+    {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;

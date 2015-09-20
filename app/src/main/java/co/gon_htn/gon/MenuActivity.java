@@ -137,7 +137,8 @@ public class MenuActivity extends AppCompatActivity {
                     place += location.getString("city") + ", " + location.getString("state");
 
                     Event eventToSave = new Event(event.getString("name"),
-                            AddEventActivity.EVENT_SOURCE_FACEBOOK, place, formatter.format(startDate), null);
+                            AddEventActivity.EVENT_SOURCE_FACEBOOK, null,
+                            place, formatter.format(startDate), null);
 
                     mFirebaseRef.child(mUserId).child("events").child(event.getString("id")).setValue(eventToSave);
                     facebookEventsUpdated = true;

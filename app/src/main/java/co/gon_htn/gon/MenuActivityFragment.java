@@ -13,16 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Space;
 import android.widget.TextView;
 
 import com.facebook.AccessToken;
-import com.fasterxml.jackson.annotation.JsonValue;
+import android.widget.Space;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
 import co.gon_htn.gon.firebase_objects.Event;
 
 /**
@@ -53,8 +51,8 @@ public class MenuActivityFragment extends Fragment {
         mUserEventsRef = mUserEventsRef.child(AccessToken.getCurrentAccessToken().getUserId()).child("events");
         mUserEventsRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Log.d("Found: ", snapshot.getChildrenCount() + " events");
+            public void onDataChange(DataSnapshot snapshot)
+            {
                 for (DataSnapshot postSnapshot : snapshot.getChildren())
                 {
                     Event event = postSnapshot.getValue(Event.class);
@@ -89,6 +87,7 @@ public class MenuActivityFragment extends Fragment {
                         newBadge.setBackgroundColor(context.getResources().getColor(R.color.LightBlue));
                     }
 
+                    //Space view for creating space between event badges
                     Space miniSpace = new Space(context);
                     miniSpace.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             50));
@@ -118,10 +117,8 @@ public class MenuActivityFragment extends Fragment {
     }
 
 
-
-    private View.OnClickListener linkToDetailsPage(final String eventId)
-    {
-        View.OnClickListener eventLink  = new View.OnClickListener() {
+    private View.OnClickListener linkToDetailsPage(final String eventId) {
+        View.OnClickListener eventLink = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent eventDetailsIntent = new Intent(context, AddEventActivity.class);
