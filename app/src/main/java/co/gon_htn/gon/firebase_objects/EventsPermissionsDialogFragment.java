@@ -32,6 +32,7 @@ public class EventsPermissionsDialogFragment extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         LoginManager.getInstance().logInWithReadPermissions(getActivity(), Arrays.asList("user_events"));
+                        LoginActivity.importFacebookEvents = true;
                         Intent intent = new Intent(getActivity(), MenuActivity.class);
                         intent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                         startActivity(intent);
@@ -40,6 +41,7 @@ public class EventsPermissionsDialogFragment extends DialogFragment {
                 .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        LoginActivity.importFacebookEvents = false;
                         Intent intent = new Intent(getActivity(), MenuActivity.class);
                         intent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                         startActivity(intent);
