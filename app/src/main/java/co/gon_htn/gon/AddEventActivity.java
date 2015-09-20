@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,16 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import co.gon_htn.gon.firebase_objects.Event;
@@ -33,16 +38,22 @@ public class AddEventActivity extends AppCompatActivity
     public static final String EVENT_SOURCE_FACEBOOK = "Facebook";
     public static final String EVENT_SOURCE_USER = "User";
 
+    public static final String EVENT_ID_BUNDLE_KEY = "EventDetails.eventId";
+
     TextView startDate;
     TextView endDate;
     EditText userItem;
     LinearLayout userItemList;
     Activity activity;
 
-    Firebase mFbRef = new Firebase("https://gon-htn.firebaseio.com/users/");
+    Firebase mFbRef;
 
     Button addUserItem;
     Button submitEvent;
+
+    String mEventId;
+    Event mEvent;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -56,6 +67,96 @@ public class AddEventActivity extends AppCompatActivity
 
         //get linear layout that contains all user inputted items
         userItemList = (LinearLayout)findViewById(R.id.user_items);
+
+
+        if(getIntent().getExtras() != null)
+        {
+            mEventId = getIntent().getExtras().getString(AddEventActivity.EVENT_ID_BUNDLE_KEY);
+            mFbRef = new Firebase("https://gon-htn.firebaseio.com/users/" + AccessToken
+                    .getCurrentAccessToken().getUserId() + "/events/");
+
+            mFbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        if(postSnapshot.getKey().equals(mEventId))
+                        {
+                            mEvent = postSnapshot.getValue(Event.class);
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+                    Log.d("Read failed:", firebaseError.getMessage());
+                }
+            });
+
+            if(mEvent != null)
+            {
+                if(mEvent.getUserItems().size() != 0)
+                {
+                    for(int i = 0; i < mEvent.getUserItems().size(); i++)
+                    {
+                        EditText newItem = new EditText(activity);
+                        newItem.setText(mEvent.getUserItems().get(i));
+                        View.OnKeyListener ekl = enterKeyListener();
+                        newItem.setOnKeyListener(ekl);
+                        userItemList.addView(newItem);
+                    }
+                }
+                if(mEvent.getRecommendedItems().size() != 0)
+                {
+                    for(int j = 0; j < mEvent.getRecommendedItems().size(); j++)
+                    {
+                        EditText newItem = new EditText(activity);
+                        newItem.setText(mEvent.getUserItems().get(i));
+                        View.OnKeyListener ekl = enterKeyListener();
+                        newItem.setOnKeyListener(ekl);
+                        userItemList.addView(newItem);
+                    }
+                }
+                if(mEvent.getName() != null || !mEvent.getName().isEmpty())
+                {
+                    EditText name = (EditText)findViewById(R.id.event_name);
+                    name.setText(mEvent.getName());
+                }
+                if(mEvent.getStartDate() != null || !mEvent.getStartDate().isEmpty())
+                {
+                    TextView start = (TextView)findViewById(R.id.start_date);
+                    start.setText(mEvent.getStartDate());
+                }
+                if(mEvent.getEndDate() != null || !mEvent.getEndDate().isEmpty())
+                {
+                    TextView end = (TextView)findViewById(R.id.end_date);
+                    end.setText(mEvent.getStartDate());
+                }
+                if(mEvent.getLocation() != null || !mEvent.getLocation().isEmpty())
+                {
+                    EditText loc = (EditText)findViewById(R.id.event_location);
+                    loc.setText(mEvent.getLocation());
+                }
+            }
+        }
+
+        else
+        {
+            //Very first user item edit text when adding an event
+            userItem = (EditText) findViewById(R.id.user_item_1);
+            View.OnKeyListener myEkl = enterKeyListener();
+            userItem.setOnKeyListener(myEkl);
+
+            //start date input field
+            startDate = (TextView) findViewById(R.id.start_date);
+            View.OnClickListener startDatePick = datePickerCalendar(startDate);
+            startDate.setOnClickListener(startDatePick);
+
+            //end date input field
+            endDate = (TextView) findViewById(R.id.end_date);
+            View.OnClickListener endDatePick = datePickerCalendar(endDate);
+            endDate.setOnClickListener(endDatePick);
+        }
+
 
         //invisible item that adds another field to user items
         addUserItem = (Button)findViewById(R.id.btn_add_user_item);
@@ -75,20 +176,7 @@ public class AddEventActivity extends AppCompatActivity
             }
         });
 
-        //start date input field
-        startDate = (TextView) findViewById(R.id.start_date);
-        View.OnClickListener startDatePick = datePickerCalendar(startDate);
-        startDate.setOnClickListener(startDatePick);
 
-        //end date input field
-        endDate = (TextView) findViewById(R.id.end_date);
-        View.OnClickListener endDatePick = datePickerCalendar(endDate);
-        endDate.setOnClickListener(endDatePick);
-
-        //first user item edit text
-        userItem = (EditText) findViewById(R.id.user_item_1);
-        View.OnKeyListener myEkl = enterKeyListener();
-        userItem.setOnKeyListener(myEkl);
 
         //Submit button on click event handler
         submitEvent = (Button)findViewById(R.id.submit_event);
@@ -132,12 +220,26 @@ public class AddEventActivity extends AppCompatActivity
                         if(myView instanceof EditText)
                             rItems_array.add(((EditText) myView).getText().toString());
                     }
-                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
-                            uItems_array, rItems_array);
+
+                    if(mEvent != null)
+                        newEvent = new Event(eventName, mEvent.getSource(), location, startDate, endDate,
+                                uItems_array, rItems_array);
+                    else
+                        newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                                uItems_array, rItems_array);
                 }
                 else
-                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
-                            uItems_array);
+                {
+                    if(mEvent != null)
+                    {
+                        newEvent = new Event(eventName, mEvent.getSource(), location, startDate, endDate,
+                                uItems_array);
+                    }
+                    else
+                        newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                                uItems_array);
+
+                }
 
                 //Get user facebook id and save event to the database
                 String thisUser = AccessToken.getCurrentAccessToken().getUserId();
@@ -199,7 +301,5 @@ public class AddEventActivity extends AppCompatActivity
         };
         return ekl;
     }
-
-
 
 }

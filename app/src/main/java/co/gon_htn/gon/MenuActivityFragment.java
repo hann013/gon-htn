@@ -55,11 +55,19 @@ public class MenuActivityFragment extends Fragment {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 Log.d("Found: ", snapshot.getChildrenCount() + " events");
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren())
+                {
                     Event event = postSnapshot.getValue(Event.class);
+
                     LinearLayout newBadge = new LinearLayout(context);
+
+                    //Attach event id to the layout
                     newBadge.setOrientation(LinearLayout.VERTICAL);
                     newBadge.setPadding(20, 20, 20, 20);
+
+                    //Register on click listener
+                    View.OnClickListener clickToEventDetails = linkToDetailsPage(postSnapshot.getKey());
+                    newBadge.setOnClickListener(clickToEventDetails);
 
                     TextView eventName = new TextView(context);
                     TextView eventStartDate = new TextView(context);
@@ -107,5 +115,20 @@ public class MenuActivityFragment extends Fragment {
         });
 
         return eventsView;
+    }
+
+
+
+    private View.OnClickListener linkToDetailsPage(final String eventId)
+    {
+        View.OnClickListener eventLink  = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent eventDetailsIntent = new Intent(context, AddEventActivity.class);
+                eventDetailsIntent.putExtra(AddEventActivity.EVENT_ID_BUNDLE_KEY, eventId);
+                startActivity(eventDetailsIntent);
+            }
+        };
+        return eventLink;
     }
 }
