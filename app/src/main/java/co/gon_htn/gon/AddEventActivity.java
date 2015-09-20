@@ -54,7 +54,6 @@ public class AddEventActivity extends AppCompatActivity
     String mEventId;
     Event mEvent;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -82,6 +81,44 @@ public class AddEventActivity extends AppCompatActivity
                         if(postSnapshot.getKey().equals(mEventId))
                         {
                             mEvent = postSnapshot.getValue(Event.class);
+                            Log.d("Event", mEvent.toString());
+
+                            if(mEvent.getUserItems().size() != 0)
+                            {
+                                userItem = (EditText) findViewById(R.id.user_item_1);
+                                userItem.setVisibility(View.GONE);
+
+                                for(int i = 0; i < mEvent.getUserItems().size(); i++)
+                                {
+                                    EditText newItem = new EditText(activity);
+                                    newItem.setText(mEvent.getUserItems().get(i));
+                                    View.OnKeyListener ekl = enterKeyListener();
+                                    newItem.setOnKeyListener(ekl);
+                                    userItemList.addView(newItem);
+                                }
+                            }
+
+                            if(mEvent.getName() != null || !mEvent.getName().isEmpty())
+                            {
+                                EditText name = (EditText)findViewById(R.id.event_name);
+                                name.setText(mEvent.getName());
+                            }
+                            if(mEvent.getStartDate() != null || !mEvent.getStartDate().isEmpty())
+                            {
+                                TextView start = (TextView)findViewById(R.id.start_date);
+                                start.setText(mEvent.getStartDate());
+                            }
+                            if(mEvent.getEndDate() != null || !mEvent.getEndDate().isEmpty())
+                            {
+                                TextView end = (TextView)findViewById(R.id.end_date);
+                                end.setText(mEvent.getStartDate());
+                            }
+                            if(mEvent.getLocation() != null || !mEvent.getLocation().isEmpty())
+                            {
+                                EditText loc = (EditText)findViewById(R.id.event_location);
+                                loc.setText(mEvent.getLocation());
+                            }
+
                         }
                     }
                 }
@@ -91,52 +128,6 @@ public class AddEventActivity extends AppCompatActivity
                     Log.d("Read failed:", firebaseError.getMessage());
                 }
             });
-
-            if(mEvent != null)
-            {
-                if(mEvent.getUserItems().size() != 0)
-                {
-                    for(int i = 0; i < mEvent.getUserItems().size(); i++)
-                    {
-                        EditText newItem = new EditText(activity);
-                        newItem.setText(mEvent.getUserItems().get(i));
-                        View.OnKeyListener ekl = enterKeyListener();
-                        newItem.setOnKeyListener(ekl);
-                        userItemList.addView(newItem);
-                    }
-                }
-                if(mEvent.getRecommendedItems().size() != 0)
-                {
-                    for(int j = 0; j < mEvent.getRecommendedItems().size(); j++)
-                    {
-                        EditText newItem = new EditText(activity);
-                        newItem.setText(mEvent.getUserItems().get(i));
-                        View.OnKeyListener ekl = enterKeyListener();
-                        newItem.setOnKeyListener(ekl);
-                        userItemList.addView(newItem);
-                    }
-                }
-                if(mEvent.getName() != null || !mEvent.getName().isEmpty())
-                {
-                    EditText name = (EditText)findViewById(R.id.event_name);
-                    name.setText(mEvent.getName());
-                }
-                if(mEvent.getStartDate() != null || !mEvent.getStartDate().isEmpty())
-                {
-                    TextView start = (TextView)findViewById(R.id.start_date);
-                    start.setText(mEvent.getStartDate());
-                }
-                if(mEvent.getEndDate() != null || !mEvent.getEndDate().isEmpty())
-                {
-                    TextView end = (TextView)findViewById(R.id.end_date);
-                    end.setText(mEvent.getStartDate());
-                }
-                if(mEvent.getLocation() != null || !mEvent.getLocation().isEmpty())
-                {
-                    EditText loc = (EditText)findViewById(R.id.event_location);
-                    loc.setText(mEvent.getLocation());
-                }
-            }
         }
 
         else
