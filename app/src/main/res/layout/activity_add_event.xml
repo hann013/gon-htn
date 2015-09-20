@@ -19,24 +19,22 @@
             android:layout_height="match_parent"
             android:id="@+id/add_event_form">
 
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="@string/event_add"
-                android:background="@color/Carrot"
-                android:textColor="@color/White"
-                android:layout_marginBottom="10dp"
-                android:padding="10dp" />
-
             <EditText
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/event_name"
-                android:inputType="text"
-                android:editable="false"
-                android:hint="@string/event_name" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:hint="@string/event_add"
+                android:background="@color/Carrot"
+                android:textColor="@color/White"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp"
+                android:id="@+id/event_name" />
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_category"
+                android:hint="@string/event_category" />
 
             <EditText
                 android:layout_width="fill_parent"

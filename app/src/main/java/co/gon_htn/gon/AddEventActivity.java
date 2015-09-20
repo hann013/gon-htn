@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +14,20 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
-import java.text.SimpleDateFormat;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 import co.gon_htn.gon.firebase_objects.Event;
@@ -39,7 +43,8 @@ public class AddEventActivity extends AppCompatActivity
     LinearLayout userItemList;
     Activity activity;
 
-    Firebase mFbRef = new Firebase("https://gon-htn.firebaseio.com/users/");
+    Firebase mFbUsersRef = new Firebase("https://gon-htn.firebaseio.com/users/");
+    Firebase mFbRecsRef = new Firebase("https://gon-htn.firebaseio.com/recommendations/");
 
     Button addUserItem;
     Button submitEvent;
@@ -75,6 +80,22 @@ public class AddEventActivity extends AppCompatActivity
             }
         });
 
+        // category spinner
+        Spinner spinner = (Spinner) findViewById(R.id.event_category);
+
+        mFbRecsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                HashMap<String, Array> categories = ((HashMap<String, HashMap<String, Array>>) dataSnapshot.getValue()).get("activities");
+                int i = 0;
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d("menu_database_error", "The read failed: " + firebaseError.getMessage());
+            }
+        });
+
         //start date input field
         startDate = (TextView) findViewById(R.id.start_date);
         View.OnClickListener startDatePick = datePickerCalendar(startDate);
@@ -106,7 +127,7 @@ public class AddEventActivity extends AppCompatActivity
                 String startDate = ((TextView)findViewById(R.id.start_date)).getText().toString();
                 String endDate = ((TextView)findViewById(R.id.end_date)).getText().toString();
 
-                //User inputted items
+                //User-inputted items
                 ViewGroup items_u = ((ViewGroup)(LinearLayout)
                         findViewById(R.id.user_items));
                 ArrayList<String> uItems_array = new ArrayList<String>();
@@ -141,10 +162,10 @@ public class AddEventActivity extends AppCompatActivity
 
                 //Get user facebook id and save event to the database
                 String thisUser = AccessToken.getCurrentAccessToken().getUserId();
-                Firebase eventRef = mFbRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
+                Firebase eventRef = mFbUsersRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
                 eventRef.setValue(newEvent);
 
-                Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Event saved!", Toast.LENGTH_SHORT).show();
 
                 //transition to the menu intent to view the events
                 Intent menuIntent = new Intent(activity, MenuActivity.class);
