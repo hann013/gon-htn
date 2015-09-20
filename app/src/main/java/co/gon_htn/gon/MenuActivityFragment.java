@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.facebook.AccessToken;
+import com.firebase.client.Firebase;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -16,6 +19,7 @@ public class MenuActivityFragment extends Fragment {
 
     Button addEventButton;
     Context context;
+    Firebase mFirebaseRef = new Firebase("https://gon-htn.firebaseio.com/users/");
 
     public MenuActivityFragment() {
     }
@@ -25,6 +29,7 @@ public class MenuActivityFragment extends Fragment {
                              Bundle savedInstanceState)
     {
         context = getActivity().getApplicationContext();
+        mFirebaseRef.child(AccessToken.getCurrentAccessToken().getUserId()).child("events");
 
         View eventsView = inflater.inflate(R.layout.fragment_menu, container, false);
         addEventButton = (Button)eventsView.findViewById(R.id.btn_add_event);
