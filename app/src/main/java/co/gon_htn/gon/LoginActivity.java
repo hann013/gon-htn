@@ -48,7 +48,6 @@ public class LoginActivity extends FragmentActivity {
                 if(AccessToken.getCurrentAccessToken() != null)
                 {
                     Intent menuIntent = new Intent(mActivity, MenuActivity.class);
-
                     menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                     startActivity(menuIntent);
                 }

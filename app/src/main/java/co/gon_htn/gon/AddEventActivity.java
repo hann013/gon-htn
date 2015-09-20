@@ -2,6 +2,7 @@ package co.gon_htn.gon;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -144,6 +145,11 @@ public class AddEventActivity extends AppCompatActivity
                 eventRef.setValue(newEvent);
 
                 Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show();
+
+                //transition to the menu intent to view the events
+                Intent menuIntent = new Intent(activity, MenuActivity.class);
+                menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
+                startActivity(menuIntent);
             }
         });
     }
@@ -165,9 +171,8 @@ public class AddEventActivity extends AppCompatActivity
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int day)
                             {
-                                String date = year+"/"+month+"/"+day;
-                                SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd");
-                                myDate.setText(simpledateformat.format(date));
+                                String date = year+"-"+month+"-"+day;
+                                myDate.setText(date);
                             }
                         }, mYear, mMonth, mDay);
                 dpd.show();
