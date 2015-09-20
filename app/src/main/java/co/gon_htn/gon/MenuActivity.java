@@ -38,7 +38,7 @@ public class MenuActivity extends AppCompatActivity {
         // request additional permissions to view user events
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("user_events"));
 
-        mUserId = getIntent().getExtras().getString(LoginActivity.USER_ID_BUNDLE_KEY);
+        //mUserId = getIntent().getExtras().getString(LoginActivity.USER_ID_BUNDLE_KEY);
 
         listenForDatabaseChanges();
 
