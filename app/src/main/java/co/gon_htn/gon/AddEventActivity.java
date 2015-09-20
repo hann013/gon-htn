@@ -3,17 +3,20 @@ package co.gon_htn.gon;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Service;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 
@@ -63,14 +66,14 @@ public class AddEventActivity extends AppCompatActivity
         });
 
         //start date input field
-        startDate = (TextView) findViewById(R.id.event_date);
+        startDate = (TextView) findViewById(R.id.start_Date);
         View.OnClickListener startDatePick = datePickerCalendar(startDate);
         startDate.setOnClickListener(startDatePick);
 
         //end date input field
-        endDate = (TextView) findViewById(R.id.event_date);
+        endDate = (TextView) findViewById(R.id.end_date);
         View.OnClickListener endDatePick = datePickerCalendar(endDate);
-        startDate.setOnClickListener(endDatePick);
+        endDate.setOnClickListener(endDatePick);
 
 
         userItem = (EditText) findViewById(R.id.user_item_1);
@@ -109,7 +112,7 @@ public class AddEventActivity extends AppCompatActivity
                             {
                                 SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
                                 Date date = new Date(year, month-1, day);
-                                myDate.setText(simpledateformat.format(date) + ", " + String.valueOf(month) +
+                                myDate.setText(simpledateformat.format(date) + ", " + String.valueOf(month+1) +
                                         "-" + String.valueOf(day) + "-" + String.valueOf(year));
 
                             }
@@ -137,6 +140,32 @@ public class AddEventActivity extends AppCompatActivity
             }
         };
         return ekl;
+    }
+
+    // from the link above
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+
+        // Checks whether a hardware keyboard is available
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            ViewGroup group = (ViewGroup)findViewById(R.id.user_items);
+            int count = group.getChildCount();
+            for(int i = 0; i < count; i++)
+            {
+                View view = group.getChildAt(i);
+                if(view instanceof EditText)
+                {
+                    String content = ((EditText)view).getText().toString();
+
+                    //if empty edittext, delete it
+                    if(content == null || content.length() == 0 || content == "")
+                        ((ViewGroup)view.getParent()).removeView(view);
+                }
+            }
+        }
     }
 
 

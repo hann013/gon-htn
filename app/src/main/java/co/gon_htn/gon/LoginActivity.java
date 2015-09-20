@@ -43,6 +43,19 @@ public class LoginActivity extends FragmentActivity {
 
         activity = this;
 
+        showEvents = (Button)findViewById(R.id.btn_my_events);
+        showEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccessToken aT = AccessToken.getCurrentAccessToken();
+                if(aT != null)
+                {
+                    Intent menuIntent = new Intent(activity, MenuActivity.class);
+                    startActivity(menuIntent);
+                }
+            }
+        });
+
         //user is logged in
         if (AccessToken.getCurrentAccessToken() != null) {
             showEvents.setVisibility(View.VISIBLE);
@@ -77,18 +90,6 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
-        showEvents = (Button)findViewById(R.id.btn_my_events);
-        showEvents.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AccessToken aT = AccessToken.getCurrentAccessToken();
-                if(aT != null)
-                {
-                    Intent menuIntent = new Intent(activity, MenuActivity.class);
-                    startActivity(menuIntent);
-                }
-            }
-        });
 
     }
 
