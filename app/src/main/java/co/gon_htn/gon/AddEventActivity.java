@@ -105,25 +105,45 @@ public class AddEventActivity extends AppCompatActivity
                                 }
                             }
 
-                            if(mEvent.getName() != null || !mEvent.getName().isEmpty())
-                            {
-                                EditText name = (EditText)findViewById(R.id.event_name);
-                                name.setText(mEvent.getName());
+                            if (mEvent.getRecommendedItems() != null) {
+                                if (mEvent.getRecommendedItems().size() > 0) {
+                                    findViewById(R.id.rec_items_label).setVisibility(View.VISIBLE);
+                                    LinearLayout recItems = (LinearLayout) findViewById(R.id.recommended_items);
+                                    recItems.setVisibility(View.VISIBLE);
+                                    for (String itemName : mEvent.getRecommendedItems()) {
+                                        // append recommended items to view
+                                        TextView newItem = new TextView(activity);
+                                        recItems.addView(newItem);
+                                        newItem.setTextSize(20);
+                                        newItem.setPadding(15,0,0,5);
+                                        newItem.setText(itemName);
+                                    }
+                                }
                             }
-                            if(mEvent.getStartDate() != null || !mEvent.getStartDate().isEmpty())
-                            {
-                                TextView start = (TextView)findViewById(R.id.start_date);
-                                start.setText(mEvent.getStartDate());
+
+                            if(mEvent.getName() != null) {
+                                if (!mEvent.getName().isEmpty()) {
+                                    EditText name = (EditText) findViewById(R.id.event_name);
+                                    name.setText(mEvent.getName());
+                                }
                             }
-                            if(mEvent.getEndDate() != null || !mEvent.getEndDate().isEmpty())
-                            {
-                                TextView end = (TextView)findViewById(R.id.end_date);
-                                end.setText(mEvent.getStartDate());
+                            if(mEvent.getStartDate() != null) {
+                                if (!mEvent.getStartDate().isEmpty()) {
+                                    TextView start = (TextView) findViewById(R.id.start_date);
+                                    start.setText(mEvent.getStartDate());
+                                }
                             }
-                            if(mEvent.getLocation() != null || !mEvent.getLocation().isEmpty())
-                            {
-                                EditText loc = (EditText)findViewById(R.id.event_location);
-                                loc.setText(mEvent.getLocation());
+                            if(mEvent.getEndDate() != null) {
+                                if (!mEvent.getEndDate().isEmpty()) {
+                                    TextView end = (TextView) findViewById(R.id.end_date);
+                                    end.setText(mEvent.getStartDate());
+                                }
+                            }
+                            if(mEvent.getLocation() != null) {
+                                if (!mEvent.getLocation().isEmpty()) {
+                                    EditText loc = (EditText) findViewById(R.id.event_location);
+                                    loc.setText(mEvent.getLocation());
+                                }
                             }
 
                         }
@@ -213,6 +233,8 @@ public class AddEventActivity extends AppCompatActivity
                                         LinearLayout recItems = (LinearLayout) findViewById(R.id.recommended_items);
                                         TextView newItem = new TextView(activity);
                                         recItems.addView(newItem);
+                                        newItem.setTextSize(20);
+                                        newItem.setPadding(15,0,0,5);
                                         newItem.setText(itemName);
                                     }
                                 }
@@ -288,8 +310,8 @@ public class AddEventActivity extends AppCompatActivity
                     for (int j = 0; j < items_r.getChildCount(); j++)
                     {
                         View myView = items_r.getChildAt(j);
-                        if(myView instanceof EditText)
-                            rItems_array.add(((EditText) myView).getText().toString());
+                        if(myView instanceof TextView)
+                            rItems_array.add(((TextView) myView).getText().toString());
                     }
 
                     //when editing existing file
