@@ -16,16 +16,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.firebase.client.Firebase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 import co.gon_htn.gon.firebase_objects.Event;
 
 public class AddEventActivity extends AppCompatActivity
 {
+    public static final String EVENT_SOURCE_FACEBOOK = "Facebook";
+    public static final String EVENT_SOURCE_USER = "User";
 
     TextView startDate;
     TextView endDate;
@@ -103,13 +108,13 @@ public class AddEventActivity extends AppCompatActivity
                 //User inputted items
                 ViewGroup items_u = ((ViewGroup)(LinearLayout)
                         findViewById(R.id.user_items));
-                String[] uItems_array = new String[items_u.getChildCount()];
+                ArrayList<String> uItems_array = new ArrayList<String>();
 
                 for(int i = 0; i < items_u.getChildCount(); i++)
                 {
                     View view = items_u.getChildAt(i);
                     if(view instanceof EditText)
-                        uItems_array[i] = ((EditText)view).getText().toString();
+                        uItems_array.add(((EditText) view).getText().toString());
                 }
 
                 //Recommended items
@@ -118,22 +123,24 @@ public class AddEventActivity extends AppCompatActivity
 
                 if(items_r.getChildCount() != 0)
                 {
-                    String[] rItems_array = new String[items_r.getChildCount()];
+                    ArrayList<String> rItems_array = new ArrayList<String>();
 
                     for (int j = 0; j < items_r.getChildCount(); j++)
                     {
                         View myView = items_r.getChildAt(j);
                         if(myView instanceof EditText)
-                            rItems_array[j] = ((EditText) myView).getText().toString();
+                            rItems_array.add(((EditText) myView).getText().toString());
                     }
-                    newEvent = new Event(eventName, "User", location, startDate, endDate, uItems_array, rItems_array);
+                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                            uItems_array, rItems_array);
                 }
                 else
-                    newEvent = new Event(eventName, "User", location, startDate, endDate, uItems_array);
+                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                            uItems_array);
 
                 //Get user facebook id and save event to the database
                 String thisUser = AccessToken.getCurrentAccessToken().getUserId();
-                Firebase eventRef = mFbRef.child(thisUser).child("events");
+                Firebase eventRef = mFbRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
                 eventRef.setValue(newEvent);
 
                 Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show();

@@ -19,10 +19,16 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 
 import co.gon_htn.gon.firebase_objects.Event;
@@ -49,29 +55,37 @@ public class MenuActivity extends AppCompatActivity {
         // attach child listener to database reference
         mFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, String> ids = (HashMap<String, String>) dataSnapshot.getValue();
+            public void onDataChange(final DataSnapshot dataSnapshot) {
+                final HashMap<String, String> ids = (HashMap<String, String>) dataSnapshot.getValue();
 
-                // user doesn't exist
-                if (ids == null || !ids.containsKey(mUserId)) {
-                    // retrieve name data
-                    new GraphRequest(
-                            AccessToken.getCurrentAccessToken(),
-                            "/" + mUserId,
-                            null,
-                            HttpMethod.GET,
-                            new GraphRequest.Callback() {
-                                public void onCompleted(GraphResponse response) {
-                                    try {
-                                        String name = response.getJSONObject().getString("name");
+                // retrieve name and events data
+                GraphRequest dataRequest = new GraphRequest(
+                        AccessToken.getCurrentAccessToken(),
+                        "/" + mUserId,
+                        null,
+                        HttpMethod.GET,
+                        new GraphRequest.Callback() {
+                            public void onCompleted(GraphResponse response) {
+                                try {
+                                    String name = response.getJSONObject().getString("name");
+
+                                    // if user doesn't exist, save new user
+                                    if (ids == null || !ids.containsKey(mUserId)) {
                                         createAndSaveNewUser(name);
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
                                     }
+                                    storeEvents(response.getJSONObject());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
                                 }
                             }
-                    ).executeAsync();
-                }
+                        }
+                );
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id,name,events");
+                dataRequest.setParameters(parameters);
+                dataRequest.executeAsync();
             }
 
             @Override
@@ -89,5 +103,38 @@ public class MenuActivity extends AppCompatActivity {
         Firebase newUserRef = mFirebaseRef.child(mUserId);
         User newUser = new User(name);
         newUserRef.setValue(newUser);
+    }
+
+    public void storeEvents(JSONObject graphData) throws JSONException, ParseException {
+        // look for events that are upcoming
+        JSONArray eventsData = null;
+        eventsData = graphData.getJSONObject("events").getJSONArray("data");
+
+        if (eventsData != null) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            // only add upcoming events to imported list
+            for (int i = 0; i < eventsData.length(); i++) {
+                    JSONObject event = eventsData.getJSONObject(i);
+                Date startDate = formatter.parse(event.getString("start_time").substring(0,10));
+                if (startDate.after(new Date())) {
+                    JSONObject location = event.getJSONObject("place").getJSONObject("location");
+
+                    String place = event.getJSONObject("place").getString("name") + ", ";
+
+                    if (location.getString("street") != null) {
+                        place += location.getString("street") + ", ";
+                    }
+
+                    place += location.getString("city") + ", " + location.getString("state");
+
+
+                    Event eventToSave = new Event(event.getString("name"),
+                            AddEventActivity.EVENT_SOURCE_FACEBOOK, place, startDate.toString(), null);
+
+                    mFirebaseRef.child(mUserId).child("events").child(event.getString("id")).setValue(eventToSave);
+                }
+            }
+        }
     }
 }
