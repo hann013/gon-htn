@@ -8,17 +8,45 @@ public class Event
     // recommendedItems and endDate are not mandatory but other ones are mandatory
 
     private ArrayList<String> mUserItems;
+
+    public void setStartDate(String mStartDate) {
+        this.mStartDate = mStartDate;
+    }
+
+    public void setEndDate(String mEndDate) {
+        this.mEndDate = mEndDate;
+    }
+
+    public void setLocation(String mLocation) {
+        this.mLocation = mLocation;
+    }
+
+    public void setName(String mName) {
+        this.mName = mName;
+    }
+
+    public void setSource(String mSource) {
+        this.mSource = mSource;
+    }
+
     private ArrayList<String> mRecommendedItems;
     private String mStartDate;
     private String mEndDate;
     private String mLocation;
     private String mName;
     private String mSource;
+    private String mCategory;
 
-    public Event(String name, String source, String location, String startDate, String endDate,
+    public Event()
+    {
+
+    }
+
+    public Event(String name, String source, String category, String location, String startDate, String endDate,
                  ArrayList<String> userItems, ArrayList<String> recommendedItems) {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;
@@ -27,10 +55,11 @@ public class Event
         mUserItems = userItems;
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate,
+    public Event(String name, String source, String category, String location, String startDate, String endDate,
                  ArrayList<String> userItems) {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;
@@ -38,9 +67,23 @@ public class Event
         mUserItems = userItems;
     }
 
-    public Event(String name, String source, String location, String startDate, String endDate) {
+    @Override
+    public String toString() {
+        return "Event{" +
+                "mUserItems=" + mUserItems +
+                ", mRecommendedItems=" + mRecommendedItems +
+                ", mStartDate='" + mStartDate + '\'' +
+                ", mEndDate='" + mEndDate + '\'' +
+                ", mLocation='" + mLocation + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mSource='" + mSource + '\'' +
+                '}';
+    }
+
+    public Event(String name, String source, String category, String location, String startDate, String endDate) {
         mName = name;
         mSource = source;
+        mCategory = category;
         mLocation = location;
         mStartDate = startDate;
         mEndDate = endDate;
@@ -70,6 +113,14 @@ public class Event
     public String getEndDate()
     {
         return mEndDate;
+    }
+
+    public void setUserItems(ArrayList<String> mUserItems) {
+        this.mUserItems = mUserItems;
+    }
+
+    public void setRecommendedItems(ArrayList<String> mRecommendedItems) {
+        this.mRecommendedItems = mRecommendedItems;
     }
 
     public ArrayList<String> getUserItems()

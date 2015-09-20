@@ -31,7 +31,7 @@
                 android:layout_gravity="center_horizontal"
                 android:textColor="@color/White"
                 android:background="@color/Carrot"
-                android:visibility="visible"
+                android:visibility="invisible"
                 android:textSize="20dp"
                 android:textStyle="bold|normal" />
 

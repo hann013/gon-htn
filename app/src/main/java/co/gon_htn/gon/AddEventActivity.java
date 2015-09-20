@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -28,6 +30,8 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import co.gon_htn.gon.firebase_objects.Event;
@@ -36,6 +40,8 @@ public class AddEventActivity extends AppCompatActivity
 {
     public static final String EVENT_SOURCE_FACEBOOK = "Facebook";
     public static final String EVENT_SOURCE_USER = "User";
+
+    private ArrayList<String> recommendedItems = new ArrayList<String>();
 
     TextView startDate;
     TextView endDate;
@@ -80,14 +86,62 @@ public class AddEventActivity extends AppCompatActivity
             }
         });
 
-        // category spinner
-        Spinner spinner = (Spinner) findViewById(R.id.event_category);
+        // event category spinner
+        final Spinner spinner = (Spinner) findViewById(R.id.event_category);
 
         mFbRecsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                HashMap<String, Array> categories = ((HashMap<String, HashMap<String, Array>>) dataSnapshot.getValue()).get("activities");
-                int i = 0;
+                Set<String> categories = ((HashMap) ((HashMap) dataSnapshot.getValue()).get("activity")).keySet();
+                List<String> selectItems = new ArrayList<String>(categories);
+                selectItems.add(0, "Event Category");
+
+                ArrayAdapter<String> categoryAdapter = new ArrayAdapter<String>(getBaseContext(),
+                        android.R.layout.simple_spinner_item, selectItems);
+                categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(categoryAdapter);
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        // get recommended items for category
+                        final String category = parent.getItemAtPosition(position).toString();
+
+                        // if existing recommended items, delete
+                        if (recommendedItems.size() > 0 || category == "Event Category") {
+                            ((LinearLayout) findViewById(R.id.recommended_items)).removeAllViews();
+                        } else {
+                            findViewById(R.id.rec_items_label).setVisibility(View.VISIBLE);
+                        }
+
+                        if (category != "Event Category") {
+                            mFbRecsRef.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    ArrayList<String> categories = (ArrayList<String>)
+                                            ((HashMap) ((HashMap) dataSnapshot.getValue()).get("activity")).get(category);
+                                    recommendedItems = categories;
+                                    for (String itemName : categories) {
+                                        // append recommended items to view
+                                        LinearLayout recItems = (LinearLayout) findViewById(R.id.recommended_items);
+                                        TextView newItem = new TextView(activity);
+                                        recItems.addView(newItem);
+                                        newItem.setText(itemName);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(FirebaseError firebaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
             }
 
             @Override
@@ -123,6 +177,7 @@ public class AddEventActivity extends AppCompatActivity
 
                 Event newEvent;
                 String eventName = ((EditText)findViewById(R.id.event_name)).getText().toString();
+                String category = ((Spinner)findViewById(R.id.event_category)).getSelectedItem().toString();
                 String location = ((EditText)findViewById(R.id.event_location)).getText().toString();
                 String startDate = ((TextView)findViewById(R.id.start_date)).getText().toString();
                 String endDate = ((TextView)findViewById(R.id.end_date)).getText().toString();
@@ -153,11 +208,11 @@ public class AddEventActivity extends AppCompatActivity
                         if(myView instanceof EditText)
                             rItems_array.add(((EditText) myView).getText().toString());
                     }
-                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                    newEvent = new Event(eventName, EVENT_SOURCE_USER, category, location, startDate, endDate,
                             uItems_array, rItems_array);
                 }
                 else
-                    newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
+                    newEvent = new Event(eventName, EVENT_SOURCE_USER, category, location, startDate, endDate,
                             uItems_array);
 
                 //Get user facebook id and save event to the database
@@ -201,7 +256,6 @@ public class AddEventActivity extends AppCompatActivity
         };
         return dpc;
     }
-
 
     //enter key listener for item editviews.
     private View.OnKeyListener enterKeyListener()
