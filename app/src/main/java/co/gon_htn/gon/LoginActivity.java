@@ -5,6 +5,8 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -19,6 +21,9 @@ import com.firebase.client.Firebase;
 import co.gon_htn.gon.firebase_objects.EventsPermissionsDialogFragment;
 
 public class LoginActivity extends FragmentActivity {
+
+    Activity activity;
+    Button showEvents;
 
     public static final String USER_ID_BUNDLE_KEY = "Login.userId";
 
@@ -36,8 +41,11 @@ public class LoginActivity extends FragmentActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
+        activity = this;
+
+        //user is logged in
         if (AccessToken.getCurrentAccessToken() != null) {
-            // TODO: instantiate button
+            showEvents.setVisibility(View.VISIBLE);
         }
 
         // find login button and register callback
@@ -47,6 +55,11 @@ public class LoginActivity extends FragmentActivity {
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+                //button to show event list is now visible
+                if(showEvents != null) {
+                    showEvents.setVisibility(View.VISIBLE);
+                }
+
                 EventsPermissionsDialogFragment eventsPermissions = new EventsPermissionsDialogFragment();
                 eventsPermissions.show(getFragmentManager(), "events permissions");
             }
@@ -64,11 +77,36 @@ public class LoginActivity extends FragmentActivity {
             }
         });
 
+        showEvents = (Button)findViewById(R.id.btn_my_events);
+        showEvents.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccessToken aT = AccessToken.getCurrentAccessToken();
+                if(aT != null)
+                {
+                    Intent menuIntent = new Intent(activity, MenuActivity.class);
+                    startActivity(menuIntent);
+                }
+            }
+        });
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();  // Always call the superclass method first
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null && showEvents != null)
+        {
+            showEvents.setVisibility(View.VISIBLE);
+        }
     }
 }

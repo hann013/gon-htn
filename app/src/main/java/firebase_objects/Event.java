@@ -8,7 +8,8 @@ import java.sql.Timestamp;
 public class Event
 {
     private String[] items;
-    private Timestamp date;
+    private String startDate;
+    private String endDate;
     private String location;
 
 

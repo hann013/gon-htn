@@ -14,7 +14,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/action_add_event"
+            android:text="@string/action_add"
             android:id="@+id/btn_add_event"
             android:textStyle="bold"
             android:textColor="@color/White"
