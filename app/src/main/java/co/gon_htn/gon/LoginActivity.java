@@ -40,14 +40,15 @@ public class LoginActivity extends FragmentActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
+        // on-click handler for show event list button
         showEvents = (Button)findViewById(R.id.btn_my_events);
         showEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AccessToken aT = AccessToken.getCurrentAccessToken();
-                if(aT != null)
+                if(AccessToken.getCurrentAccessToken() != null)
                 {
                     Intent menuIntent = new Intent(mActivity, MenuActivity.class);
+
                     menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                     startActivity(menuIntent);
                 }
@@ -55,7 +56,8 @@ public class LoginActivity extends FragmentActivity {
         });
 
         //user is logged in
-        if (AccessToken.getCurrentAccessToken() != null) {
+        if (AccessToken.getCurrentAccessToken() != null)
+        {
             showEvents.setVisibility(View.VISIBLE);
         }
 
@@ -65,7 +67,8 @@ public class LoginActivity extends FragmentActivity {
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(LoginResult loginResult)
+            {
                 //button to show event list is now visible
                 if(showEvents != null) {
                     showEvents.setVisibility(View.VISIBLE);
