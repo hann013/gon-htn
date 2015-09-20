@@ -22,7 +22,6 @@ import co.gon_htn.gon.firebase_objects.EventsPermissionsDialogFragment;
 
 public class LoginActivity extends FragmentActivity {
 
-    Activity activity;
     Button showEvents;
 
     public static final String USER_ID_BUNDLE_KEY = "Login.userId";
@@ -41,8 +40,6 @@ public class LoginActivity extends FragmentActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-        activity = this;
-
         showEvents = (Button)findViewById(R.id.btn_my_events);
         showEvents.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +47,8 @@ public class LoginActivity extends FragmentActivity {
                 AccessToken aT = AccessToken.getCurrentAccessToken();
                 if(aT != null)
                 {
-                    Intent menuIntent = new Intent(activity, MenuActivity.class);
+                    Intent menuIntent = new Intent(mActivity, MenuActivity.class);
+                    menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                     startActivity(menuIntent);
                 }
             }
@@ -80,17 +78,13 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onCancel() {
                 Toast.makeText(getApplicationContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onError(FacebookException error) {
                 Toast.makeText(getApplicationContext(), "Error logging in", Toast.LENGTH_SHORT).show();
-
             }
         });
-
-
     }
 
     @Override
