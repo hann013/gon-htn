@@ -51,6 +51,7 @@ public class MenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_menu);
     }
 
+
     public void listenForDatabaseChanges() {
         // attach child listener to database reference
         mFirebaseRef.addValueEventListener(new ValueEventListener() {

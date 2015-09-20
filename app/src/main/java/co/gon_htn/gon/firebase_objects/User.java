@@ -24,4 +24,20 @@ public class User
     public ArrayList<Event> getEvents() {
         return mEvents;
     }
+
+    public void setFullName(String mFullName) {
+        this.mFullName = mFullName;
+    }
+
+    public void setEvents(ArrayList<Event> mEvents) {
+        this.mEvents = mEvents;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "mFullName='" + mFullName + '\'' +
+                ", mEvents=" + mEvents +
+                '}';
+    }
 }
