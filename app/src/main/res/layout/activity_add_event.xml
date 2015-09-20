@@ -48,7 +48,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="date"
-                android:id="@+id/start_Date"
+                android:id="@+id/start_date"
                 android:hint="@string/event_start_date"
                 android:textSize="20dp"
                 android:layout_marginLeft="2dp"
@@ -108,10 +108,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/action_submit"
                 android:id="@+id/submit_event"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:textColor="@color/White"
                 android:background="@color/DarkGrey"
-                android:shadowColor="@color/Carrot" />
+                android:shadowColor="@color/Carrot"
+                android:textStyle="bold"
+                android:clickable="true" />
 
         </LinearLayout>
     </ScrollView>

@@ -22,7 +22,6 @@ import co.gon_htn.gon.firebase_objects.EventsPermissionsDialogFragment;
 
 public class LoginActivity extends FragmentActivity {
 
-    Activity activity;
     Button showEvents;
 
     public static final String USER_ID_BUNDLE_KEY = "Login.userId";
@@ -41,23 +40,23 @@ public class LoginActivity extends FragmentActivity {
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
 
-        activity = this;
-
+        // on-click handler for show event list button
         showEvents = (Button)findViewById(R.id.btn_my_events);
         showEvents.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AccessToken aT = AccessToken.getCurrentAccessToken();
-                if(aT != null)
+                if(AccessToken.getCurrentAccessToken() != null)
                 {
-                    Intent menuIntent = new Intent(activity, MenuActivity.class);
+                    Intent menuIntent = new Intent(mActivity, MenuActivity.class);
+                    menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
                     startActivity(menuIntent);
                 }
             }
         });
 
         //user is logged in
-        if (AccessToken.getCurrentAccessToken() != null) {
+        if (AccessToken.getCurrentAccessToken() != null)
+        {
             showEvents.setVisibility(View.VISIBLE);
         }
 
@@ -67,7 +66,8 @@ public class LoginActivity extends FragmentActivity {
 
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
-            public void onSuccess(LoginResult loginResult) {
+            public void onSuccess(LoginResult loginResult)
+            {
                 //button to show event list is now visible
                 if(showEvents != null) {
                     showEvents.setVisibility(View.VISIBLE);
@@ -80,17 +80,13 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onCancel() {
                 Toast.makeText(getApplicationContext(), "Login cancelled", Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onError(FacebookException error) {
                 Toast.makeText(getApplicationContext(), "Error logging in", Toast.LENGTH_SHORT).show();
-
             }
         });
-
-
     }
 
     @Override

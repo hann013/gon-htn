@@ -7,6 +7,7 @@
     <color name="Carrot">#f39c12</color>
     <color name="White">#ffffff</color>
     <color name="DarkGrey">#34495e</color>
+    <color name="Green">#27ae60</color>
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
