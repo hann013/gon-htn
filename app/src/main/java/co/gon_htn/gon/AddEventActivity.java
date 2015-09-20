@@ -13,6 +13,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.facebook.AccessToken;
 import com.firebase.client.Firebase;
 
 import java.text.SimpleDateFormat;
@@ -29,6 +31,8 @@ public class AddEventActivity extends AppCompatActivity
     EditText userItem;
     LinearLayout userItemList;
     Activity activity;
+
+    Firebase mFbRef = new Firebase("https://gon-htn.firebaseio.com/users/");
 
     Button addUserItem;
     Button submitEvent;
@@ -64,7 +68,7 @@ public class AddEventActivity extends AppCompatActivity
         });
 
         //start date input field
-        startDate = (TextView) findViewById(R.id.start_Date);
+        startDate = (TextView) findViewById(R.id.start_date);
         View.OnClickListener startDatePick = datePickerCalendar(startDate);
         startDate.setOnClickListener(startDatePick);
 
@@ -84,9 +88,47 @@ public class AddEventActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Event newEvent = new Event();
+                Event newEvent;
 
+                String eventName = ((EditText)findViewById(R.id.event_name)).getText().toString();
+                String location = ((EditText)findViewById(R.id.event_location)).getText().toString();
+                String startDate = ((TextView)findViewById(R.id.start_date)).getText().toString();
+                String endDate = ((TextView)findViewById(R.id.end_date)).getText().toString();
 
+                //User inputted items
+                ViewGroup items_u = ((ViewGroup)(LinearLayout)
+                        findViewById(R.id.user_items));
+                String[] uItems_array = new String[items_u.getChildCount()];
+
+                for(int i = 0; i < items_u.getChildCount(); i++)
+                {
+                    View view = items_u.getChildAt(i);
+                    if(view instanceof EditText)
+                        uItems_array[i] = ((EditText)view).getText().toString();
+                }
+
+                //Recommended items
+                ViewGroup items_r = ((ViewGroup)(LinearLayout)
+                        findViewById(R.id.recommended_items));
+
+                if(items_r.getChildCount() != 0)
+                {
+                    String[] rItems_array = new String[items_r.getChildCount()];
+
+                    for (int j = 0; j < items_r.getChildCount(); j++)
+                    {
+                        View myView = items_r.getChildAt(j);
+                        if(myView instanceof EditText)
+                            rItems_array[j] = ((EditText) myView).getText().toString();
+                    }
+                    newEvent = new Event(eventName, "User", location, startDate, endDate, uItems_array, rItems_array);
+                }
+                else
+                    newEvent = new Event(eventName, "User", location, startDate, endDate, uItems_array);
+
+                String thisUser = AccessToken.getCurrentAccessToken().getUserId();
+                Firebase eventRef = mFbRef.child(thisUser).child("events");
+                eventRef.setValue(newEvent);
             }
         });
 
