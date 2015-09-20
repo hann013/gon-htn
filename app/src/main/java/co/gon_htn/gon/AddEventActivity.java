@@ -2,6 +2,7 @@ package co.gon_htn.gon;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -13,6 +14,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -60,15 +62,16 @@ public class AddEventActivity extends AppCompatActivity
         addUserItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText newItem = new EditText(activity);
-
-                //Add enter key and back key listeners
-                View.OnKeyListener newEkl = enterKeyListener();
-                View.OnKeyListener newBkl = backKeyListener();
-                newItem.setOnKeyListener(newEkl);
-                newItem.setOnKeyListener(newBkl);
-                userItemList.addView(newItem);
-                newItem.requestFocus();
+                EditText currEditTxt = (EditText)getWindow().getCurrentFocus();
+                String currContent = currEditTxt.getText().toString();
+                if(currContent != null && currContent != "" && currContent != " " && !currContent.isEmpty())
+                {
+                    EditText newItem = new EditText(activity);
+                    View.OnKeyListener newEkl = enterKeyListener();
+                    newItem.setOnKeyListener(newEkl);
+                    userItemList.addView(newItem);
+                    newItem.requestFocus();
+                }
             }
         });
 
@@ -88,13 +91,16 @@ public class AddEventActivity extends AppCompatActivity
         userItem.setOnKeyListener(myEkl);
 
         //Submit button on click event handler
-        submitEvent = (Button) findViewById(R.id.submit_event);
+        submitEvent = (Button)findViewById(R.id.submit_event);
         submitEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Event newEvent;
+                submitEvent.setBackgroundColor(getResources().getColor(R.color.Green));
 
+                //Initialize new Event object
+
+                Event newEvent;
                 String eventName = ((EditText)findViewById(R.id.event_name)).getText().toString();
                 String location = ((EditText)findViewById(R.id.event_location)).getText().toString();
                 String startDate = ((TextView)findViewById(R.id.start_date)).getText().toString();
@@ -133,14 +139,20 @@ public class AddEventActivity extends AppCompatActivity
                     newEvent = new Event(eventName, EVENT_SOURCE_USER, location, startDate, endDate,
                             uItems_array);
 
+                //Get user facebook id and save event to the database
                 String thisUser = AccessToken.getCurrentAccessToken().getUserId();
                 Firebase eventRef = mFbRef.child(thisUser).child("events").child(UUID.randomUUID().toString());
                 eventRef.setValue(newEvent);
+
+                Toast.makeText(activity, "Success!", Toast.LENGTH_SHORT).show();
+
+                //transition to the menu intent to view the events
+                Intent menuIntent = new Intent(activity, MenuActivity.class);
+                menuIntent.putExtra(LoginActivity.USER_ID_BUNDLE_KEY, AccessToken.getCurrentAccessToken().getUserId());
+                startActivity(menuIntent);
             }
         });
-
     }
-
 
     //date picker calendar popup for date textviews on click events.
     private View.OnClickListener datePickerCalendar(final TextView myDate)
@@ -159,10 +171,8 @@ public class AddEventActivity extends AppCompatActivity
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int day)
                             {
-                                SimpleDateFormat simpledateformat = new SimpleDateFormat("EEEE");
-                                Date date = new Date(year-1900, month+1, day);
-                                myDate.setText(simpledateformat.format(date) + ", " + String.valueOf(month+1) +
-                                        "-" + String.valueOf(day) + "-" + String.valueOf(year));
+                                String date = year+"-"+month+"-"+day;
+                                myDate.setText(date);
                             }
                         }, mYear, mMonth, mDay);
                 dpd.show();
@@ -188,34 +198,6 @@ public class AddEventActivity extends AppCompatActivity
             }
         };
         return ekl;
-    }
-
-   private View.OnKeyListener backKeyListener()
-   {
-        View.OnKeyListener bkl = new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                (keyCode == KeyEvent.KEYCODE_BACK))
-                {
-                    //if back key was pressed, delete the editText if
-                    //it has no content in it.
-                    ViewGroup group = (ViewGroup)findViewById(R.id.user_items);
-                    for(int i = 0; i < group.getChildCount(); i++)
-                    {
-                        View view = group.getChildAt(i);
-                        if(view instanceof EditText)
-                        {
-                            String content = ((EditText)view).getText().toString();
-                            if(content == null || content.length() == 0 || content == "")
-                                ((ViewGroup)view.getParent()).removeView(view);
-                        }
-                    }
-                }
-                return false;
-            }
-        };
-       return bkl;
     }
 
 
