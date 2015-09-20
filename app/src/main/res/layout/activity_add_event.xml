@@ -108,10 +108,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/action_submit"
                 android:id="@+id/submit_event"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="30dp"
                 android:textColor="@color/White"
                 android:background="@color/DarkGrey"
-                android:shadowColor="@color/Carrot" />
+                android:shadowColor="@color/Carrot"
+                android:textStyle="bold"
+                android:clickable="true" />
 
         </LinearLayout>
     </ScrollView>
